@@ -9,17 +9,21 @@ import org.qvtu.laboratoryweb.entity.Admin;
 import org.qvtu.laboratoryweb.entity.LoginRequest;
 import org.qvtu.laboratoryweb.entity.Result;
 import org.qvtu.laboratoryweb.service.AdminService;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api")
 public class LoginController {
     
     private final AdminService adminService;
+    private final StringRedisTemplate redisTemplate;
 
-    public LoginController(AdminService adminService) {
+    public LoginController(AdminService adminService, StringRedisTemplate redisTemplate) {
         this.adminService = adminService;
+        this.redisTemplate = redisTemplate;
     }
     
     @PostMapping("/login")
@@ -50,6 +54,9 @@ public class LoginController {
         
         // 生成 UUID 作为登录凭证
         String token = UUID.randomUUID().toString();
+        
+        // 将用户信息存储到 Redis，设置 30 分钟过期时间
+        redisTemplate.opsForValue().set(token, account, 30, TimeUnit.MINUTES);
 
         return new Result(true, "登录成功", token);
     }
