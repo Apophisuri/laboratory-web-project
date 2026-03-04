@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.qvtu.laboratoryweb.mapper.LaboratoryMapper">
+    
+    <resultMap id="LaboratoryResult" type="org.qvtu.laboratoryweb.entity.Laboratory">
+        <id property="labId" column="labId"/>
+        <result property="labName" column="labName"/>
+        <result property="labUsage" column="labUsage"/>
+    </resultMap>
+    
+    <select id="findAll" resultMap="LaboratoryResult">
+        SELECT labId, labName, labUsage 
+        FROM laboratory
+        ORDER BY labId
+    </select>
+    
+    <select id="findByLabId" resultMap="LaboratoryResult">
+        SELECT labId, labName, labUsage 
+        FROM laboratory
+        WHERE labId = #{labId}
+    </select>
+    
+    <insert id="insert" parameterType="org.qvtu.laboratoryweb.entity.Laboratory">
+        INSERT INTO laboratory (labId, labName, labUsage)
+        VALUES (#{labId}, #{labName}, #{labUsage})
+    </insert>
+
+    <update id="updateByLabId" parameterType="org.qvtu.laboratoryweb.entity.Laboratory">
+        UPDATE laboratory
+        SET labName = #{labName}, labUsage = #{labUsage}
+        WHERE labId = #{labId}
+    </update>
+
+    <delete id="deleteByLabId" parameterType="java.lang.String">
+        DELETE FROM laboratory
+        WHERE labId = #{labId}
+    </delete>
+</mapper>
